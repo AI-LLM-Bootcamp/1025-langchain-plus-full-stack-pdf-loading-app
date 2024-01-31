@@ -1,0 +1,27 @@
+.pdfInput {
+    padding: 8px;
+    border: 1px solid #ccc;
+    width: calc(100% - 10px);
+    height: 30px;
+    margin: 0 10px 0px 10px;
+    border-radius: 4px;
+}
+
+.pdfRow {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 10px 10px 0px 10px;
+    padding: 5px;
+}
+
+.deleteBtn {
+    background: none;
+    border: 0;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.deleteBtn:hover {
+    color: red;
+}
