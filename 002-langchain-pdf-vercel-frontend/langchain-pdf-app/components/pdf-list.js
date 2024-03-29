@@ -42,7 +42,7 @@ export default function PdfList() {
     setPdfs(copy);
   }
 
-  async function updatePdf(pdf, fieldChanged) {
+/*   async function updatePdf(pdf, fieldChanged) {
     const data = { [fieldChanged]: pdf[fieldChanged] };
 
     await fetch(process.env.NEXT_PUBLIC_API_URL + `/pdfs/${pdf.id}`, {
@@ -50,7 +50,33 @@ export default function PdfList() {
       body: JSON.stringify(data),
       headers: { 'Content-Type': 'application/json' }
     });
+  } */
+
+/* Our Honor Student Robert Merchant finds out that the following 
+version of the previous function works better:
+
+This bug fix applies to all projects that use a select checkbox 
+to select or unselect an item from a list of items on the frontend 
+(PDFs, etc). There is a problem with the "updatePDF( )" function 
+that gets called when a user selects (or unselects) a checkbox, 
+for example a PDF file. The update fails, because the PUT operation 
+is expecting ALL of the PDF item fields/columns to be replaced 
+(name, file, selected), not just the "selected" column.
+
+If you have replaced the old function with the new function, 
+you will need to restart the frontend.*/
+
+  async function updatePdf(pdf, fieldChanged) {
+    const body_data = JSON.stringify(pdf);
+    const url = process.env.NEXT_PUBLIC_API_URL + `/pdfs/${pdf.id}`;
+ 
+    await fetch(url, {
+        method: 'PUT',
+        body: body_data,
+        headers: { 'Content-Type': 'application/json' }
+    });
   }
+
 
   async function handleDeletePdf(id) {
     const res = await fetch(process.env.NEXT_PUBLIC_API_URL + `/pdfs/${id}`, {
