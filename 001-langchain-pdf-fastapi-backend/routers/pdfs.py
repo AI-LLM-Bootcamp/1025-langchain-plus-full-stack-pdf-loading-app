@@ -7,8 +7,20 @@ from database import SessionLocal
 from uuid import uuid4
 
 # Necessary imports for langchain summarization
-from langchain import OpenAI, PromptTemplate
+from langchain import PromptTemplate
 from langchain.chains import LLMChain
+
+# gpt-6-luna update: a chat model replaces the retired completion model.
+# OpenAI() used gpt-3.5-turbo-instruct by default, which OpenAI shut down
+# on September 28, 2026. LLMChain and RetrievalQA also accept chat models.
+from langchain.chat_models import ChatOpenAI
+
+OPENAI_MODEL = "gpt-6-luna"
+
+# Reasoning turned off ("none"): fast answers, like the original model, and
+# temperature applies again. The client (openai==1.3.5) does not know the
+# reasoning_effort parameter yet, so it travels inside extra_body.
+NO_REASONING = {"extra_body": {"reasoning_effort": "none"}}
 
 # Necessary imports to chat with a PDF file
 from langchain.document_loaders import PyPDFLoader
@@ -17,7 +29,7 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.chains import RetrievalQA
 from schemas import QuestionRequest
-llm = OpenAI()
+llm = ChatOpenAI(model=OPENAI_MODEL, model_kwargs=NO_REASONING)
 
 router = APIRouter(prefix="/pdfs")
 
@@ -63,7 +75,7 @@ def delete_pdf(id: int, db: Session = Depends(get_db)):
 
 
 # LANGCHAIN
-langchain_llm = OpenAI(temperature=0)
+langchain_llm = ChatOpenAI(model=OPENAI_MODEL, temperature=0, model_kwargs=NO_REASONING)
 
 summarize_template_string = """
         Provide a summary for the following text:
